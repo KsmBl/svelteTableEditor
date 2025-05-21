@@ -1,0 +1,26 @@
+[
+    {
+        "title": "Source One V4",
+        "price": "37.50$",
+        "motors": "2207",
+        "motorholes": "16mm-19mm"
+    },
+    {
+        "title": "GEPRC Mark 5 MK",
+        "price": "74.90$",
+        "motors": "2207",
+        "motorholes": "16mm-19mm"
+    },
+    {
+        "title": "SpeedyBee Master 5 HD",
+        "price": "89.90$",
+        "motors": "2207",
+        "motorholes": "16mm-16mm"
+    },
+    {
+        "title": "iFlight Chimera5 Pro V2",
+        "price": "49.90$",
+        "motors": "1806I2207",
+        "motorholes": "12mm-12mm"
+    }
+]
