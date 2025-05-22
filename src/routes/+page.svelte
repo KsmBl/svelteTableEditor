@@ -90,6 +90,108 @@
 
 		data = trimmed;
 	}
+
+	function moveRowup(id)
+	{
+		updateData();
+
+		if (id - 1 >= data.length) {
+			var k = id - 1 - data.length + 1;
+			while (k--) {
+				data.push(undefined);
+			}
+		}
+
+		data.splice(id - 1, 0, data.splice(id, 1)[0]);
+	}
+
+	function moveRowdown(id)
+	{
+		updateData();
+
+		if(id + 1 >= data.length) {
+			var k = id + 1 - data.length + 1;
+			while(k--) {
+				data.push(undefined);
+			}
+		}
+
+		data.splice(id + 1, 0, data.splice(id, 1)[0]);
+	}
+
+	function moveColumnLeft(id)
+	{
+		//get all table headers and datas
+		const ths = document.getElementsByClassName("th");
+		const tds = document.getElementsByClassName("td");
+
+		//calculate width and height of table
+		const width = ths.length;
+		const height = tds.length / width;
+
+		for(var i = 0; i < height; i++) {
+			const keys = Object.keys(data[i]);
+
+			const firstKey = keys[id - 1];
+			const secondKey = keys[id];
+			const temp = data[i][firstKey];
+			data[i][firstKey] = data[i][secondKey];
+			data[i][secondKey] = temp;
+
+			const newObj = {};
+
+			for(var ii = 0; ii < keys.length; ii++) {
+				const key = keys[ii];
+
+				if (ii === id - 1) {
+					newObj[secondKey] = data[i][firstKey];
+				} else if (ii === id) {
+					newObj[firstKey] = data[i][secondKey];
+				} else {
+					newObj[key] = data[i][key];
+				}
+			}
+
+			data[i] = newObj;
+		}
+	}
+
+	function moveColumnRight(id)
+	{
+		//get all table headers and datas
+		const ths = document.getElementsByClassName("th");
+		const tds = document.getElementsByClassName("td");
+
+		//calculate width and height of table
+		const width = ths.length;
+		const height = tds.length / width;
+
+		for(var i = 0; i < height; i++) {
+			const keys = Object.keys(data[i]);
+
+			const firstKey = keys[id];
+			const secondKey = keys[id + 1];
+			const temp = data[i][firstKey];
+			data[i][firstKey] = data[i][secondKey];
+			data[i][secondKey] = temp;
+
+			const newObj = {};
+
+			for(var ii = 0; ii < keys.length; ii++) {
+				const key = keys[ii];
+
+				if (ii === id) {
+					newObj[secondKey] = data[i][firstKey];
+				} else if (ii === id + 1) {
+					newObj[firstKey] = data[i][secondKey];
+				} else {
+					newObj[key] = data[i][key];
+				}
+			}
+
+			data[i] = newObj;
+		}
+	}
 </script>
 
 
@@ -105,6 +207,25 @@
 <table>
 	<thead>
 		<tr>
+			{#each Object.keys(data[0]) as key, i}
+			<th> <div>
+				{#if i !== 0}
+				<p class="clickable" on:click={() => moveColumnLeft(i)}> ← </p>
+				{:else}
+				<p style="color: #aaa"> ← </p>
+				{/if}
+
+				{#if i !== Object.keys(data[0]).length - 1}
+				<p class="clickable" on:click={() => moveColumnRight(i)}> → </p>
+				{:else}
+				<p style="color: #aaa"> → </p>
+				{/if}
+			</div> </th>
+			{/each}
+		</tr>
+
+		<tr>
+
 			{#each Object.keys(data[0]) as key, i}
 			<th class="th"> <div> <input type="text" value={key}>
 				<button aria-label="delete this Column" on:click={() => deleteColumn(i)}> - </button>
@@ -122,6 +243,18 @@
 			{/each}
 
 			<td class="clickable" aria-label="delete this Row" on:click={() => deleteRow(i)}> - </td>
+
+			{#if i !== 0}
+			<td class="clickable arrowUp" aria-label="move Row up" on:click={() => moveRowup(i)}> ↑ </td>
+			{:else}
+			<td class="arrowUp" style="color: #aaa"> ↑ </td>
+			{/if}
+
+			{#if i !== data.length - 1}
+			<td class="clickable arrowDown" aria-label="move Row down" on:click={() => moveRowdown(i)}> ↓ </td>
+			{:else}
+			<td class="arrowDown" style="color: #aaa"> ↓ </td>
+			{/if}
 		</tr>
 		{/each}
 
@@ -170,6 +303,11 @@
 			background-color: #00000000;
 			border: none;
 			cursor: pointer;
+		}
+
+		p {
+			width: 50%;
+			text-align: center;
 		}
 	}
 
