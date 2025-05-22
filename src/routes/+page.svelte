@@ -210,13 +210,13 @@
 			{#each Object.keys(data[0]) as key, i}
 			<th> <div>
 				{#if i !== 0}
-				<p class="clickable" on:click={() => moveColumnLeft(i)}> ← </p>
+				<button class="clickable" aria-label="move Column left" on:click={() => moveColumnLeft(i)}> ← </button>
 				{:else}
 				<p style="color: #aaa"> ← </p>
 				{/if}
 
 				{#if i !== Object.keys(data[0]).length - 1}
-				<p class="clickable" on:click={() => moveColumnRight(i)}> → </p>
+				<button class="clickable" aria-label="move Column right" on:click={() => moveColumnRight(i)}> → </button>
 				{:else}
 				<p style="color: #aaa"> → </p>
 				{/if}
@@ -305,7 +305,7 @@
 			cursor: pointer;
 		}
 
-		p {
+		p, button {
 			width: 50%;
 			text-align: center;
 		}
