@@ -192,6 +192,23 @@
 			data[i] = newObj;
 		}
 	}
+
+	function saveJsonFile()
+	{
+		updateData();
+		console.log(data);
+
+		const jsonStr = JSON.stringify(data, null, 2);
+		const blob = new Blob([jsonStr], { type: "application/json" });
+		const url = URL.createObjectURL(blob);
+
+		const link = document.createElement("a");
+		link.href = url;
+		link.download = "test.json";
+		link.click();
+
+		URL.revokeObjectURL(url);
+	}
 </script>
 
 
@@ -263,7 +280,14 @@
 				class="clickable unmarkable"
 				style="text-align:center"
 				aria-label="add new Row"
-				on:click={addRow}> + neue Zeile
+				on:click={addRow}> + new line
+			</td>
+
+			<td colspan=2
+				class="clickable unmarkable"
+				style="text-align:center"
+				aria-label="save json file"
+				on:click={saveJsonFile}> save
 			</td>
 		</tr>
 	</tbody>
