@@ -125,7 +125,7 @@
 		data.splice(id + 1, 0, data.splice(id, 1)[0]);
 	}
 
-	function moveColumnLeft(id)
+	function moveColumn(id, amount)
 	{
 		//get all table headers and datas
 		const ths = tableObject.getElementsByClassName("th");
@@ -138,8 +138,8 @@
 		for(var i = 0; i < height; i++) {
 			const keys = Object.keys(data[i]);
 
-			const firstKey = keys[id - 1];
-			const secondKey = keys[id];
+			const firstKey = keys[id - 1 + amount];
+			const secondKey = keys[id + amount];
 			const temp = data[i][firstKey];
 			data[i][firstKey] = data[i][secondKey];
 			data[i][secondKey] = temp;
@@ -149,46 +149,9 @@
 			for(var ii = 0; ii < keys.length; ii++) {
 				const key = keys[ii];
 
-				if (ii === id - 1) {
+				if (ii === id - 1 + amount) {
 					newObj[secondKey] = data[i][firstKey];
-				} else if (ii === id) {
-					newObj[firstKey] = data[i][secondKey];
-				} else {
-					newObj[key] = data[i][key];
-				}
-			}
-
-			data[i] = newObj;
-		}
-	}
-
-	function moveColumnRight(id)
-	{
-		//get all table headers and datas
-		const ths = tableObject.getElementsByClassName("th");
-		const tds = tableObject.getElementsByClassName("td");
-
-		//calculate width and height of table
-		const width = ths.length;
-		const height = tds.length / width;
-
-		for(var i = 0; i < height; i++) {
-			const keys = Object.keys(data[i]);
-
-			const firstKey = keys[id];
-			const secondKey = keys[id + 1];
-			const temp = data[i][firstKey];
-			data[i][firstKey] = data[i][secondKey];
-			data[i][secondKey] = temp;
-
-			const newObj = {};
-
-			for(var ii = 0; ii < keys.length; ii++) {
-				const key = keys[ii];
-
-				if (ii === id) {
-					newObj[secondKey] = data[i][firstKey];
-				} else if (ii === id + 1) {
+				} else if (ii === id + amount) {
 					newObj[firstKey] = data[i][secondKey];
 				} else {
 					newObj[key] = data[i][key];
@@ -232,13 +195,13 @@
 			{#each Object.keys(data[0]) as key, i}
 			<th> <div>
 				{#if i !== 0}
-				<button class="clickable unmarkable" aria-label="move Column left" on:click={() => moveColumnLeft(i)}> ← </button>
+				<button class="clickable unmarkable" aria-label="move Column left" on:click={() => moveColumn(i, 0)}> ← </button>
 				{:else}
 				<p class="unmarkable" style="color: #aaa"> ← </p>
 				{/if}
 
 				{#if i !== Object.keys(data[0]).length - 1}
-				<button class="clickable unmarkable" aria-label="move Column right" on:click={() => moveColumnRight(i)}> → </button>
+				<button class="clickable unmarkable" aria-label="move Column right" on:click={() => moveColumn(i, 1)}> → </button>
 				{:else}
 				<p class="unmarkable" style="color: #aaa"> → </p>
 				{/if}
