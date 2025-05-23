@@ -210,15 +210,15 @@
 			{#each Object.keys(data[0]) as key, i}
 			<th> <div>
 				{#if i !== 0}
-				<button class="clickable" aria-label="move Column left" on:click={() => moveColumnLeft(i)}> ← </button>
+				<button class="clickable unmarkable" aria-label="move Column left" on:click={() => moveColumnLeft(i)}> ← </button>
 				{:else}
-				<p style="color: #aaa"> ← </p>
+				<p class="unmarkable" style="color: #aaa"> ← </p>
 				{/if}
 
 				{#if i !== Object.keys(data[0]).length - 1}
-				<button class="clickable" aria-label="move Column right" on:click={() => moveColumnRight(i)}> → </button>
+				<button class="clickable unmarkable" aria-label="move Column right" on:click={() => moveColumnRight(i)}> → </button>
 				{:else}
-				<p style="color: #aaa"> → </p>
+				<p class="unmarkable" style="color: #aaa"> → </p>
 				{/if}
 			</div> </th>
 			{/each}
@@ -231,7 +231,7 @@
 				<button aria-label="delete this Column" on:click={() => deleteColumn(i)}> - </button>
 			</th>
 			{/each}
-			<th class="clickable" aria-label="add new Column" on:click={addColumn}> + </th>
+			<th class="clickable unmarkable" aria-label="add new Column" on:click={addColumn}> + </th>
 		</tr>
 	</thead>
 
@@ -242,25 +242,25 @@
 			<td class="td"> <input type="text" bind:value={data[i][key]} /> </td>
 			{/each}
 
-			<td class="clickable" aria-label="delete this Row" on:click={() => deleteRow(i)}> - </td>
+			<td class="clickable unmarkable" aria-label="delete this Row" on:click={() => deleteRow(i)}> - </td>
 
 			{#if i !== 0}
-			<td class="clickable arrowUp" aria-label="move Row up" on:click={() => moveRowup(i)}> ↑ </td>
+			<td class="clickable unmarkable arrowUp" aria-label="move Row up" on:click={() => moveRowup(i)}> ↑ </td>
 			{:else}
-			<td class="arrowUp" style="color: #aaa"> ↑ </td>
+			<td class="arrowUp unmarkable" style="color: #aaa"> ↑ </td>
 			{/if}
 
 			{#if i !== data.length - 1}
-			<td class="clickable arrowDown" aria-label="move Row down" on:click={() => moveRowdown(i)}> ↓ </td>
+			<td class="clickable unmarkable arrowDown" aria-label="move Row down" on:click={() => moveRowdown(i)}> ↓ </td>
 			{:else}
-			<td class="arrowDown" style="color: #aaa"> ↓ </td>
+			<td class="arrowDown unmarkable" style="color: #aaa"> ↓ </td>
 			{/if}
 		</tr>
 		{/each}
 
 		<tr>
 			<td colspan={Object.keys(data[0]).length + 1}
-				class="clickable"
+				class="clickable unmarkable"
 				style="text-align:center"
 				aria-label="add new Row"
 				on:click={addRow}> + neue Zeile
@@ -320,13 +320,15 @@
 	}
 
 	.clickable {
+		cursor: pointer;
+	}
+
+	.unmarkable {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
 		-khtml-user-select: none;
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
-
-		cursor: pointer;
 	}
 </style>
