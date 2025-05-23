@@ -3,10 +3,15 @@
 
 	let data = [];
 
-	onMount(async () => {
-		const response = await fetch('/sample.json');
-		data = await response.json();
+	onMount(() => {
+		loadJsonFile('/sample.json');
 	});
+
+	async function loadJsonFile(path)
+	{
+		const response = await fetch(path);
+		data = await response.json();
+	}
 	
 	function makeid(length)
 	{
@@ -196,7 +201,6 @@
 	function saveJsonFile()
 	{
 		updateData();
-		console.log(data);
 
 		const jsonStr = JSON.stringify(data, null, 2);
 		const blob = new Blob([jsonStr], { type: "application/json" });
