@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 
 	let data = [];
+	let tableObject;
 
 	onMount(() => {
 		loadJsonFile('/sample.json');
@@ -28,8 +29,8 @@
 	function updateData()
 	{
 		//get all headers and datas
-		const ths = document.getElementsByClassName("th");
-		const tds = document.getElementsByClassName("td");
+		const ths = tableObject.getElementsByClassName("th");
+		const tds = tableObject.getElementsByClassName("td");
 
 		//calculate width and height of table
 		const width = ths.length;
@@ -127,8 +128,8 @@
 	function moveColumnLeft(id)
 	{
 		//get all table headers and datas
-		const ths = document.getElementsByClassName("th");
-		const tds = document.getElementsByClassName("td");
+		const ths = tableObject.getElementsByClassName("th");
+		const tds = tableObject.getElementsByClassName("td");
 
 		//calculate width and height of table
 		const width = ths.length;
@@ -164,8 +165,8 @@
 	function moveColumnRight(id)
 	{
 		//get all table headers and datas
-		const ths = document.getElementsByClassName("th");
-		const tds = document.getElementsByClassName("td");
+		const ths = tableObject.getElementsByClassName("th");
+		const tds = tableObject.getElementsByClassName("td");
 
 		//calculate width and height of table
 		const width = ths.length;
@@ -225,7 +226,7 @@
 <br>
 
 {#if data.length}
-<table>
+<table bind:this={tableObject}>
 	<thead>
 		<tr>
 			{#each Object.keys(data[0]) as key, i}
