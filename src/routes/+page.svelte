@@ -11,6 +11,7 @@
 	async function loadJsonFile(path)
 	{
 		const response = await fetch(path);
+		//TODO
 		data = await response.json();
 	}
 	
@@ -62,38 +63,47 @@
 		}
 
 		//replace old data with new parsed Data
+		//TODO
 		data = newData;
 	}
 
 	function addRow()
 	{
+		//TODO
 		const keys = Object.keys(data[0] ?? {});
 
 		const newRow = keys.reduce((obj, key) => ({ ...obj, [key]: '' }), {});
 
+		//TODO
 		data = [...data, newRow];
 	}
 
 	function addColumn()
 	{
 		const newKey = makeid(5);
+		//TODO
 		const updated = data.map(row => ({ ...row, [newKey]: '' }));
 
+		//TODO
 		data = updated;
 	}
 
 	function deleteRow(id)
 	{
 		updateData();
+		//TODO
 		data = data.filter((_, i) => i !== id);
 	}
 
 	function deleteColumn(id)
 	{
 		updateData();
+		//TODO
 		const keyToRemove = Object.keys(data[0])[id];
+		//TODO
 		const trimmed = data.map(({ [keyToRemove]: _, ...rest }) => rest);
 
+		//TODO
 		data = trimmed;
 	}
 
@@ -101,13 +111,17 @@
 	{
 		updateData();
 
+		//TODO
 		if (id - 1 >= data.length) {
+			//TODO
 			var k = id - 1 - data.length + 1;
 			while (k--) {
+				//TODO
 				data.push(undefined);
 			}
 		}
 
+		//TODO
 		data.splice(id - 1, 0, data.splice(id, 1)[0]);
 	}
 
@@ -115,13 +129,16 @@
 	{
 		updateData();
 
+		//TODO
 		if(id + 1 >= data.length) {
 			var k = id + 1 - data.length + 1;
 			while(k--) {
+				//TODO
 				data.push(undefined);
 			}
 		}
 
+		//TODO
 		data.splice(id + 1, 0, data.splice(id, 1)[0]);
 	}
 
@@ -136,10 +153,12 @@
 		const height = tds.length / width;
 
 		for(var i = 0; i < height; i++) {
+			//TODO
 			const keys = Object.keys(data[i]);
 
 			const firstKey = keys[id - 1 + amount];
 			const secondKey = keys[id + amount];
+			//TODO
 			const temp = data[i][firstKey];
 			data[i][firstKey] = data[i][secondKey];
 			data[i][secondKey] = temp;
@@ -150,14 +169,18 @@
 				const key = keys[ii];
 
 				if (ii === id - 1 + amount) {
+					//TODO
 					newObj[secondKey] = data[i][firstKey];
 				} else if (ii === id + amount) {
+					//TODO
 					newObj[firstKey] = data[i][secondKey];
 				} else {
+					//TODO
 					newObj[key] = data[i][key];
 				}
 			}
 
+			//TODO
 			data[i] = newObj;
 		}
 	}
@@ -166,6 +189,7 @@
 	{
 		updateData();
 
+		//TODO
 		const jsonStr = JSON.stringify(data, null, 2);
 		const blob = new Blob([jsonStr], { type: "application/json" });
 		const url = URL.createObjectURL(blob);
