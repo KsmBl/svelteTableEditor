@@ -1,7 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 
-	let data = [];
+	let dataHead = []; // headers for each column
+	let dataBody = []; // columns and rows itself
 	let tableObject;
 
 	onMount(() => {
@@ -11,8 +12,10 @@
 	async function loadJsonFile(path)
 	{
 		const response = await fetch(path);
-		//TODO
-		data = await response.json();
+		var data = await response.json();
+
+		dataHead = Object.keys(data[0]);
+		dataBody = data;
 	}
 	
 	function makeid(length)
@@ -38,7 +41,8 @@
 		const height = tds.length / width;
 
 		//create Array for all parsed data
-		let newData = [];
+		let newDataHead = [];
+		let newDataBody = [];
 
 		//run for each row of tabledatas
 		for(var i = 0; i < height; i++) {
@@ -59,87 +63,82 @@
 			}
 
 			//save parsed row in newData[]
-			newData.push(row);
+			newDataBody.push(row);
+		}
+
+		for(var i = 0; i < ths.length; i++) {
+			newDataHead.push(ths[i].querySelector("input").value.trim());
 		}
 
 		//replace old data with new parsed Data
-		//TODO
-		data = newData;
+		dataBody = newDataBody;
+		dataHead = newDataHead;
 	}
 
 	function addRow()
 	{
-		//TODO
-		const keys = Object.keys(data[0] ?? {});
+		const keys = (dataHead ?? {});
 
 		const newRow = keys.reduce((obj, key) => ({ ...obj, [key]: '' }), {});
 
-		//TODO
-		data = [...data, newRow];
+		dataBody = [...dataBody, newRow];
 	}
 
 	function addColumn()
 	{
 		const newKey = makeid(5);
-		//TODO
-		const updated = data.map(row => ({ ...row, [newKey]: '' }));
 
-		//TODO
-		data = updated;
+		const updatedDataBody = dataBody.map((entry, index) => ({
+			...entry,
+			[newKey]: "",
+		}));
+
+		dataBody = updatedDataBody;
+		dataHead = [...dataHead, newKey]
 	}
 
 	function deleteRow(id)
 	{
 		updateData();
-		//TODO
-		data = data.filter((_, i) => i !== id);
+		dataBody = dataBody.filter((_, i) => i !== id);
 	}
 
 	function deleteColumn(id)
 	{
 		updateData();
-		//TODO
-		const keyToRemove = Object.keys(data[0])[id];
-		//TODO
-		const trimmed = data.map(({ [keyToRemove]: _, ...rest }) => rest);
 
-		//TODO
-		data = trimmed;
+		const keyToRemove = dataHead[id];
+
+		dataBody = dataBody.map(({ [keyToRemove]: _, ...rest }) => rest);
+		dataHead = dataHead.filter(item => item !== keyToRemove);
 	}
 
 	function moveRowup(id)
 	{
 		updateData();
 
-		//TODO
-		if (id - 1 >= data.length) {
-			//TODO
-			var k = id - 1 - data.length + 1;
+		if (id - 1 >= dataBody.length) {
+			var k = id - 1 - dataBody.length + 1;
 			while (k--) {
-				//TODO
-				data.push(undefined);
+				dataBOdy.push(undefined);
 			}
 		}
 
-		//TODO
-		data.splice(id - 1, 0, data.splice(id, 1)[0]);
+		dataBody.splice(id - 1, 0, dataBody.splice(id, 1)[0]);
 	}
 
 	function moveRowdown(id)
 	{
 		updateData();
 
-		//TODO
-		if(id + 1 >= data.length) {
-			var k = id + 1 - data.length + 1;
+		if(id + 1 >= dataBody.length) {
+			var k = id + 1 - dataBody.length + 1;
 			while(k--) {
-				//TODO
-				data.push(undefined);
+				dataBody.push(undefined);
 			}
 		}
 
-		//TODO
-		data.splice(id + 1, 0, data.splice(id, 1)[0]);
+		dataBody.splice(id + 1, 0, dataBody.splice(id, 1)[0]);
 	}
 
 	function moveColumn(id, amount)
@@ -153,15 +152,13 @@
 		const height = tds.length / width;
 
 		for(var i = 0; i < height; i++) {
-			//TODO
-			const keys = Object.keys(data[i]);
+			const keys = Object.keys(dataBody[i]);
 
 			const firstKey = keys[id - 1 + amount];
 			const secondKey = keys[id + amount];
-			//TODO
-			const temp = data[i][firstKey];
-			data[i][firstKey] = data[i][secondKey];
-			data[i][secondKey] = temp;
+			const temp = dataBody[i][firstKey];
+			dataBody[i][firstKey] = dataBody[i][secondKey];
+			dataBody[i][secondKey] = temp;
 
 			const newObj = {};
 
@@ -169,19 +166,20 @@
 				const key = keys[ii];
 
 				if (ii === id - 1 + amount) {
-					//TODO
-					newObj[secondKey] = data[i][firstKey];
+					newObj[secondKey] = dataBody[i][firstKey];
 				} else if (ii === id + amount) {
-					//TODO
-					newObj[firstKey] = data[i][secondKey];
+					newObj[firstKey] = dataBody[i][secondKey];
 				} else {
-					//TODO
-					newObj[key] = data[i][key];
+					newObj[key] = dataBody[i][key];
 				}
 			}
+			dataBody[i] = newObj;
+		}
 
-			//TODO
-			data[i] = newObj;
+		if (amount === 1) {
+			[dataHead[id], dataHead[id + 1]] = [dataHead[id + 1], dataHead[id]];
+		} else if (amount === 0) {
+			[dataHead[id], dataHead[id - 1]] = [dataHead[id - 1], dataHead[id]];
 		}
 	}
 
@@ -189,8 +187,7 @@
 	{
 		updateData();
 
-		//TODO
-		const jsonStr = JSON.stringify(data, null, 2);
+		const jsonStr = JSON.stringify(dataBody, null, 2);
 		const blob = new Blob([jsonStr], { type: "application/json" });
 		const url = URL.createObjectURL(blob);
 
@@ -211,12 +208,11 @@
 
 <h1> JFON table ediwtorw </h1>
 <br>
-
-{#if data.length}
+{#if dataBody.length && dataHead.length}
 <table bind:this={tableObject}>
 	<thead>
 		<tr>
-			{#each Object.keys(data[0]) as key, i}
+			{#each dataHead as key, i}
 			<th> <div>
 				{#if i !== 0}
 				<button class="clickable unmarkable" aria-label="move Column left" on:click={() => moveColumn(i, 0)}> ← </button>
@@ -224,7 +220,7 @@
 				<p class="unmarkable" style="color: #aaa"> ← </p>
 				{/if}
 
-				{#if i !== Object.keys(data[0]).length - 1}
+				{#if i !== dataHead.length - 1}
 				<button class="clickable unmarkable" aria-label="move Column right" on:click={() => moveColumn(i, 1)}> → </button>
 				{:else}
 				<p class="unmarkable" style="color: #aaa"> → </p>
@@ -234,8 +230,7 @@
 		</tr>
 
 		<tr>
-
-			{#each Object.keys(data[0]) as key, i}
+			{#each dataHead as key, i}
 			<th class="th"> <div> <input type="text" value={key}>
 				<button aria-label="delete this Column" on:click={() => deleteColumn(i)}> - </button>
 			</th>
@@ -245,10 +240,10 @@
 	</thead>
 
 	<tbody>
-		{#each data as row, i}
+		{#each dataBody as row, i}
 		<tr>
 			{#each Object.keys(row) as key}
-			<td class="td"> <input type="text" bind:value={data[i][key]} /> </td>
+			<td class="td"> <input type="text" bind:value={dataBody[i][key]} /> </td>
 			{/each}
 
 			<td class="clickable unmarkable" aria-label="delete this Row" on:click={() => deleteRow(i)}> - </td>
@@ -259,7 +254,7 @@
 			<td class="arrowUp unmarkable" style="color: #aaa"> ↑ </td>
 			{/if}
 
-			{#if i !== data.length - 1}
+			{#if i !== dataBody.length - 1}
 			<td class="clickable unmarkable arrowDown" aria-label="move Row down" on:click={() => moveRowdown(i)}> ↓ </td>
 			{:else}
 			<td class="arrowDown unmarkable" style="color: #aaa"> ↓ </td>
@@ -268,7 +263,7 @@
 		{/each}
 
 		<tr>
-			<td colspan={Object.keys(data[0]).length + 1}
+			<td colspan={dataHead.length + 1}
 				class="clickable unmarkable"
 				style="text-align:center"
 				aria-label="add new Row"
@@ -285,6 +280,7 @@
 	</tbody>
 </table>
 {/if}
+
 
 <style>
 	* {
