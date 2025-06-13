@@ -3,7 +3,6 @@
 
 	let dataHead = []; // headers for each column
 	let dataBody = []; // columns and rows itself
-	let tableObject;
 
 	onMount(() => {
 		loadJsonFile('/sample.json');
@@ -79,13 +78,7 @@
 
 	function moveColumn(id, amount)
 	{
-		//get all table headers and datas
-		const ths = tableObject.getElementsByClassName("th");
-		const tds = tableObject.getElementsByClassName("td");
-
-		//calculate width and height of table
-		const width = ths.length;
-		const height = tds.length / width;
+		const height = dataBody.length;
 
 		for(var i = 0; i < height; i++) {
 			const keys = Object.keys(dataBody[i]);
@@ -143,7 +136,7 @@
 <h1> JFON table ediwtorw </h1>
 <br>
 {#if dataBody.length && dataHead.length}
-<table bind:this={tableObject}>
+<table>
 	<thead>
 		<tr>
 			{#each dataHead as key, i}
