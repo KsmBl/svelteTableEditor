@@ -78,38 +78,7 @@
 
 	function moveColumn(id, amount)
 	{
-		const height = dataBody.length;
-
-		for(var i = 0; i < height; i++) {
-			const keys = Object.keys(dataBody[i]);
-
-			const firstKey = keys[id - 1 + amount];
-			const secondKey = keys[id + amount];
-			const temp = dataBody[i][firstKey];
-			dataBody[i][firstKey] = dataBody[i][secondKey];
-			dataBody[i][secondKey] = temp;
-
-			const newObj = {};
-
-			for(var ii = 0; ii < keys.length; ii++) {
-				const key = keys[ii];
-
-				if (ii === id - 1 + amount) {
-					newObj[secondKey] = dataBody[i][firstKey];
-				} else if (ii === id + amount) {
-					newObj[firstKey] = dataBody[i][secondKey];
-				} else {
-					newObj[key] = dataBody[i][key];
-				}
-			}
-			dataBody[i] = newObj;
-		}
-
-		if (amount === 1) {
-			[dataHead[id], dataHead[id + 1]] = [dataHead[id + 1], dataHead[id]];
-		} else if (amount === 0) {
-			[dataHead[id], dataHead[id - 1]] = [dataHead[id - 1], dataHead[id]];
-		}
+		[dataHead[id], dataHead[id + amount]] = [dataHead[id + amount], dataHead[id]];
 	}
 
 	function saveJsonFile()
@@ -142,7 +111,7 @@
 			{#each dataHead as key, i}
 			<th> <div>
 				{#if i !== 0}
-				<button class="clickable unmarkable" aria-label="move Column left" on:click={() => moveColumn(i, 0)}> ← </button>
+				<button class="clickable unmarkable" aria-label="move Column left" on:click={() => moveColumn(i, -1)}> ← </button>
 				{:else}
 				<p class="unmarkable" style="color: #aaa"> ← </p>
 				{/if}
@@ -169,7 +138,7 @@
 	<tbody>
 		{#each dataBody as row, i}
 		<tr>
-			{#each Object.keys(row) as key}
+			{#each dataHead as key}
 			<td class="td"> <input type="text" bind:value={dataBody[i][key]} /> </td>
 			{/each}
 
