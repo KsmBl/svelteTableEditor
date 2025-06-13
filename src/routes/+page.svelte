@@ -30,51 +30,6 @@
 		return result;
 	}
 
-	function updateData()
-	{
-		//get all headers and datas
-		const ths = tableObject.getElementsByClassName("th");
-		const tds = tableObject.getElementsByClassName("td");
-
-		//calculate width and height of table
-		const width = ths.length;
-		const height = tds.length / width;
-
-		//create Array for all parsed data
-		let newDataHead = [];
-		let newDataBody = [];
-
-		//run for each row of tabledatas
-		for(var i = 0; i < height; i++) {
-			//create a row object for newData[]
-			let row = {};
-			
-			//run for each column in the current row
-			for(var ii = 0; ii < width; ii++) {
-				//parse the key for this field
-				const key = ths[ii].querySelector("input").value.trim();
-
-				//parse the value for this field
-				const input = tds[ii + (i * width)].querySelector("input");
-				const value = input.value.trim();
-
-				//add key-value pear to this row in saved data
-				row[key] = value;
-			}
-
-			//save parsed row in newData[]
-			newDataBody.push(row);
-		}
-
-		for(var i = 0; i < ths.length; i++) {
-			newDataHead.push(ths[i].querySelector("input").value.trim());
-		}
-
-		//replace old data with new parsed Data
-		dataBody = newDataBody;
-		dataHead = newDataHead;
-	}
-
 	function addRow()
 	{
 		const keys = (dataHead ?? {});
@@ -99,14 +54,11 @@
 
 	function deleteRow(id)
 	{
-		updateData();
 		dataBody = dataBody.filter((_, i) => i !== id);
 	}
 
 	function deleteColumn(id)
 	{
-		updateData();
-
 		const keyToRemove = dataHead[id];
 
 		dataBody = dataBody.map(({ [keyToRemove]: _, ...rest }) => rest);
@@ -115,30 +67,14 @@
 
 	function moveRowup(id)
 	{
-		updateData();
-
-		if (id - 1 >= dataBody.length) {
-			var k = id - 1 - dataBody.length + 1;
-			while (k--) {
-				dataBOdy.push(undefined);
-			}
-		}
-
 		dataBody.splice(id - 1, 0, dataBody.splice(id, 1)[0]);
+		dataBody = dataBody;
 	}
 
 	function moveRowdown(id)
 	{
-		updateData();
-
-		if(id + 1 >= dataBody.length) {
-			var k = id + 1 - dataBody.length + 1;
-			while(k--) {
-				dataBody.push(undefined);
-			}
-		}
-
 		dataBody.splice(id + 1, 0, dataBody.splice(id, 1)[0]);
+		dataBody = dataBody;
 	}
 
 	function moveColumn(id, amount)
@@ -185,8 +121,6 @@
 
 	function saveJsonFile()
 	{
-		updateData();
-
 		const jsonStr = JSON.stringify(dataBody, null, 2);
 		const blob = new Blob([jsonStr], { type: "application/json" });
 		const url = URL.createObjectURL(blob);
@@ -231,7 +165,7 @@
 
 		<tr>
 			{#each dataHead as key, i}
-			<th class="th"> <div> <input type="text" value={key}>
+			<th class="th"> <div> <input type="text" bind:value={dataHead[i]}>
 				<button aria-label="delete this Column" on:click={() => deleteColumn(i)}> - </button>
 			</th>
 			{/each}
