@@ -64,15 +64,9 @@
 		dataHead = dataHead.filter(item => item !== keyToRemove);
 	}
 
-	function moveRowup(id)
+	function moveRow(id, amount)
 	{
-		dataBody.splice(id - 1, 0, dataBody.splice(id, 1)[0]);
-		dataBody = dataBody;
-	}
-
-	function moveRowdown(id)
-	{
-		dataBody.splice(id + 1, 0, dataBody.splice(id, 1)[0]);
+		dataBody.splice(id + amount, 0, dataBody.splice(id, 1)[0]);
 		dataBody = dataBody;
 	}
 
@@ -145,13 +139,13 @@
 			<td class="clickable unmarkable" aria-label="delete this Row" on:click={() => deleteRow(i)}> - </td>
 
 			{#if i !== 0}
-			<td class="clickable unmarkable arrowUp" aria-label="move Row up" on:click={() => moveRowup(i)}> ↑ </td>
+			<td class="clickable unmarkable arrowUp" aria-label="move Row up" on:click={() => moveRow(i, -1)}> ↑ </td>
 			{:else}
 			<td class="arrowUp unmarkable" style="color: #aaa"> ↑ </td>
 			{/if}
 
 			{#if i !== dataBody.length - 1}
-			<td class="clickable unmarkable arrowDown" aria-label="move Row down" on:click={() => moveRowdown(i)}> ↓ </td>
+			<td class="clickable unmarkable arrowDown" aria-label="move Row down" on:click={() => moveRow(i, 1)}> ↓ </td>
 			{:else}
 			<td class="arrowDown unmarkable" style="color: #aaa"> ↓ </td>
 			{/if}
