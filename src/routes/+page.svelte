@@ -1,5 +1,5 @@
 <script>
-	import Tableeditor from "./tableeditor.svelte"
+	import Tableeditor from "$lib/tableeditor.svelte"
 </script>
 
 <Tableeditor />
