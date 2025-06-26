@@ -8,6 +8,14 @@
 <body>
 	<script type="text/javascript" src="./dist-js/components.iife.js"></script>
 
-	<table-editor />
+	<table-editor id="sampleEditor" src="/static/sample.json" />
+
+	<script>
+		function savedJson(json) {
+			console.log(json);
+		}
+
+		document.getElementById("sampleEditor").saveFunction = savedJson;
+	</script>
 </body>
 </html>

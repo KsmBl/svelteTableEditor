@@ -5,9 +5,10 @@
 
 	let dataHead = $state([]); // headers for each column
 	let dataBody = $state([]); // columns and rows itself
+	const {src, saveFunction} = $props();
 
 	onMount(() => {
-		loadJsonFile('/sample.json');
+		loadJsonFile(src);
 	});
 
 	async function loadJsonFile(path)
@@ -80,15 +81,7 @@
 	function saveJsonFile()
 	{
 		const jsonStr = JSON.stringify(dataBody, null, 2);
-		const blob = new Blob([jsonStr], { type: "application/json" });
-		const url = URL.createObjectURL(blob);
-
-		const link = document.createElement("a");
-		link.href = url;
-		link.download = "test.json";
-		link.click();
-
-		URL.revokeObjectURL(url);
+		saveFunction(jsonStr);
 	}
 </script>
 
