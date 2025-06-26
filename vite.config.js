@@ -4,7 +4,8 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit({
 		compilerOptions: {
-			customElement: true
+			customElement: true,
+			css: 'injected',
 		}
 	})]
 });
