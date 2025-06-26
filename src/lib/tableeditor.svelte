@@ -3,8 +3,8 @@
 <script>
 	import { onMount } from 'svelte';
 
-	let dataHead = []; // headers for each column
-	let dataBody = []; // columns and rows itself
+	let dataHead = $state([]); // headers for each column
+	let dataBody = $state([]); // columns and rows itself
 
 	onMount(() => {
 		loadJsonFile('/sample.json');
@@ -107,13 +107,13 @@
 			{#each dataHead as key, i}
 			<th> <div>
 				{#if i !== 0}
-				<button class="clickable unmarkable" aria-label="move Column left" on:click={() => moveColumn(i, -1)}> ← </button>
+				<button class="clickable unmarkable" aria-label="move Column left" onclick={() => moveColumn(i, -1)}> ← </button>
 				{:else}
 				<p class="unmarkable" style="color: #aaa"> ← </p>
 				{/if}
 
 				{#if i !== dataHead.length - 1}
-				<button class="clickable unmarkable" aria-label="move Column right" on:click={() => moveColumn(i, 1)}> → </button>
+				<button class="clickable unmarkable" aria-label="move Column right" onclick={() => moveColumn(i, 1)}> → </button>
 				{:else}
 				<p class="unmarkable" style="color: #aaa"> → </p>
 				{/if}
@@ -124,10 +124,10 @@
 		<tr>
 			{#each dataHead as key, i}
 			<th class="th"> <div> <input type="text" bind:value={dataHead[i]}>
-				<button aria-label="delete this Column" on:click={() => deleteColumn(i)}> - </button>
+				<button aria-label="delete this Column" onclick={() => deleteColumn(i)}> - </button>
 			</th>
 			{/each}
-			<th class="clickable unmarkable" aria-label="add new Column" on:click={addColumn}> + </th>
+			<th class="clickable unmarkable" aria-label="add new Column" onclick={addColumn}> + </th>
 		</tr>
 	</thead>
 
@@ -138,16 +138,16 @@
 			<td class="td"> <input type="text" bind:value={dataBody[i][key]} /> </td>
 			{/each}
 
-			<td class="clickable unmarkable" aria-label="delete this Row" on:click={() => deleteRow(i)}> - </td>
+			<td class="clickable unmarkable" aria-label="delete this Row" onclick={() => deleteRow(i)}> - </td>
 
 			{#if i !== 0}
-			<td class="clickable unmarkable arrowUp" aria-label="move Row up" on:click={() => moveRow(i, -1)}> ↑ </td>
+			<td class="clickable unmarkable arrowUp" aria-label="move Row up" onclick={() => moveRow(i, -1)}> ↑ </td>
 			{:else}
 			<td class="arrowUp unmarkable" style="color: #aaa"> ↑ </td>
 			{/if}
 
 			{#if i !== dataBody.length - 1}
-			<td class="clickable unmarkable arrowDown" aria-label="move Row down" on:click={() => moveRow(i, 1)}> ↓ </td>
+			<td class="clickable unmarkable arrowDown" aria-label="move Row down" onclick={() => moveRow(i, 1)}> ↓ </td>
 			{:else}
 			<td class="arrowDown unmarkable" style="color: #aaa"> ↓ </td>
 			{/if}
@@ -159,14 +159,14 @@
 				class="clickable unmarkable"
 				style="text-align:center"
 				aria-label="add new Row"
-				on:click={addRow}> + new line
+				onclick={addRow}> + new line
 			</td>
 
 			<td colspan=2
 				class="clickable unmarkable"
 				style="text-align:center"
 				aria-label="save json file"
-				on:click={saveJsonFile}> save
+				onclick={saveJsonFile}> save
 			</td>
 		</tr>
 	</tbody>
